@@ -19,6 +19,12 @@ REPLY = (
 
 
 def main() -> None:
+    # Gate guard: refuse to write an entry that would fail the sealed
+    # scorer (1-160 characters, one line, not only white space).
+    if not 1 <= len(REPLY) <= 160 or "\n" in REPLY or "\r" in REPLY:
+        raise SystemExit(
+            "refusing to write an entry outside the 1-160 character, one-line gate"
+        )
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "entry.txt").write_text(REPLY, encoding="utf-8")
